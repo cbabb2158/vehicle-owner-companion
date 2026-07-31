@@ -2,7 +2,7 @@
 
 ## Navigation model
 
-The initial prototype uses a garage as the entry point. Selecting a vehicle establishes context for all knowledge and settings content.
+The initial responsive web prototype uses a garage as the entry point. Selecting a vehicle establishes context for all knowledge and settings content. Desktop navigation uses a persistent rail; mobile navigation uses a bottom bar with the same destinations.
 
 ## 1. Garage
 

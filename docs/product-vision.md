@@ -32,6 +32,10 @@ Answers should make four things obvious:
 3. what the feature does;
 4. how to use it safely.
 
+## Validation path
+
+The product experience is validated first through a responsive web prototype using local sample data. That prototype establishes the screen flow, vocabulary, content structure, and visual direction before the experience is translated into a native SwiftUI application.
+
 ## Long-term capabilities
 
 - VIN-aware equipment and trim guidance

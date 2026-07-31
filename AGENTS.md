@@ -35,6 +35,30 @@ Until explicitly requested:
 - do not add analytics or tracking;
 - do not scaffold placeholder application frameworks.
 
+## Web prototype
+
+The first implementation is a responsive browser prototype under `web/`. It validates information architecture, navigation, visual direction, and local vehicle content before native SwiftUI development begins.
+
+- Use React, TypeScript, and Vite.
+- Keep all prototype data local and clearly separate sample content from verified vehicle guidance.
+- Support desktop and mobile browser layouts.
+- Test data-model behavior and the primary navigation flows.
+- Do not treat the prototype as authorization to add backend or cloud infrastructure.
+
+### Web commands
+
+Run these commands from `web/`:
+
+```powershell
+npm install
+npm run dev
+npm test
+npm run typecheck
+npm run build
+```
+
+Before committing a web change, run the tests, TypeScript check, and production build. Review the primary flow at desktop and mobile viewport sizes when the change affects layout or interaction.
+
 ## Development rules
 
 - Make the smallest change that satisfies the current task.
@@ -63,7 +87,7 @@ Until explicitly requested:
 
 ## Mobile application
 
-The planned client is an iPhone application using SwiftUI. SwiftData may be used where it provides a clear benefit.
+The planned native client is an iPhone application using SwiftUI. SwiftData may be used where it provides a clear benefit. Native implementation follows validation of the responsive web prototype.
 
 When mobile development begins:
 

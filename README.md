@@ -8,7 +8,7 @@ The first product target is the **2026 Mazda CX-5 Premium Plus**. The core promi
 
 ## Current phase
 
-This repository currently contains the product foundation and research structure. It intentionally does not yet include application code, a backend, authentication, subscriptions, or AI integration.
+This repository contains the product foundation, research structure, and a browser-based product prototype. The responsive web prototype is the first implementation surface; it is used to validate product flow and content before the native iPhone application is built.
 
 ## Product direction
 
@@ -26,6 +26,7 @@ The first implementation is CX-5-only, but the product and data model are intend
 
 - `docs/` - product definition, MVP scope, screens, data model, and research backlog
 - `research/2026-cx5/` - source material and research notes for the initial vehicle
+- `web/` - responsive local-data prototype used for product validation
 - `mobile/` - future SwiftUI application
 - `Plans/` - internal project planning documents
 
@@ -37,6 +38,24 @@ This is a personal project owned by `cbabb2158`. It is completely separate from 
 
 Vehicle guidance must ultimately be traceable to authoritative sources such as Mazda manuals, official service information, recall records, and published technical documentation. Unverified owner reports may inform research questions but must not be presented as established fact.
 
+## Run the web prototype
+
+Requirements: Node.js 22.13 or newer and npm.
+
+```powershell
+cd web
+npm install
+npm run dev
+```
+
+Open the local URL printed by Vite. To verify the prototype:
+
+```powershell
+npm test
+npm run typecheck
+npm run build
+```
+
 ## Status
 
-Foundation documentation only. No runnable application exists yet.
+Foundation documentation and responsive web prototype. Native mobile development has not started.

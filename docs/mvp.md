@@ -6,7 +6,7 @@ Validate that owners value a fast, vehicle-specific way to find and understand i
 
 ## MVP experience
 
-The first prototype uses local sample data and supports:
+The first implementation is a responsive browser prototype. It uses local sample data and supports:
 
 - a garage containing selected vehicles;
 - a vehicle detail view;
@@ -32,6 +32,13 @@ These are backlog topics, not automatically verified claims. Each must be resear
 ## Local-only data
 
 The prototype will use bundled or locally persisted sample data. It may include sample vehicles for Chris and Jenny, but committed source must contain only masked, clearly non-sensitive VIN values.
+
+## Delivery sequence
+
+1. Validate the five-screen experience as a responsive web application.
+2. Test the prototype with representative desktop and mobile browser sizes.
+3. Research and verify the first publishable CX-5 guidance set.
+4. Translate the validated experience into SwiftUI on macOS with Xcode.
 
 ## MVP exclusions
 
@@ -66,5 +73,6 @@ The MVP is ready for hands-on evaluation when:
 - sample data works entirely offline;
 - no full VINs or secrets are committed;
 - initial guidance clearly shows applicability and source status;
-- data-model and navigation tests pass on a supported Xcode environment;
+- web data-model and navigation tests pass;
+- the responsive production build succeeds;
 - build and test instructions are documented.

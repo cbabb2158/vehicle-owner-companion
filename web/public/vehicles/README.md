@@ -6,6 +6,8 @@ July 31, 2026:
 
 - `2026-cx5-premium-plus-machine-gray.png` — Machine Gray Metallic (46G)
 - `2026-cx5-premium-plus-soul-red.png` — Soul Red Crystal Metallic (46V)
+- `2026-cx5-select-polymetal-gray.jpg` — 2.5 S Select in Polymetal Gray
+  Metallic (47C), Mazda visualizer exterior frame 001 downloaded August 1, 2026
 
 Source: <https://www.mazdausa.com/vehicles/cx-5>
 

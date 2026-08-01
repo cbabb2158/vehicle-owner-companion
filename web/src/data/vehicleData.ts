@@ -13,9 +13,11 @@ export interface Vehicle {
   trim: string;
   maskedVin: string;
   displayVin: string;
+  maskedPlate: string;
+  displayPlate: string;
   exteriorColor: string;
-  imageSrc: string;
-  imageAlt: string;
+  imageSrc?: string;
+  imageAlt?: string;
   contentProgress: number;
   recentQuestionIds: string[];
 }
@@ -37,6 +39,22 @@ export interface Question {
   verificationStatus: VerificationStatus;
   nextResearchStep: string;
   relatedQuestionIds: string[];
+  procedureSteps?: string[];
+  sourceReferenceIds: string[];
+  lastReviewedAt?: string;
+}
+
+export interface SourceReference {
+  id: string;
+  publisher: string;
+  title: string;
+  modelYear: number;
+  market: string;
+  publicationDate: string;
+  section: string;
+  page: string;
+  url: string;
+  retrievedAt: string;
 }
 
 export interface VehicleSetting {
@@ -78,10 +96,26 @@ export function resolveVehicleVin(
     : maskedVin;
 }
 
+export function resolveVehiclePlate(
+  localPlate: string | undefined,
+  maskedPlate: string,
+  allowFullPlate = true
+): string {
+  if (!allowFullPlate) {
+    return maskedPlate;
+  }
+
+  const normalized = localPlate?.trim().toUpperCase();
+  return normalized && /^[A-Z0-9]{1,8}$/.test(normalized)
+    ? normalized
+    : maskedPlate;
+}
+
 const chrisMaskedVin = "JM3*********02158";
 const jennyMaskedVin = "JM3*********05219";
-const elieMaskedVin = "JM3*********49339";
-const allowLocalVins = import.meta.env.VITE_PUBLIC_BUILD !== "true";
+const elieMaskedVin = "VIN forthcoming";
+const maskedPlate = "Plate on file";
+const allowLocalVehicleDetails = import.meta.env.VITE_PUBLIC_BUILD !== "true";
 
 export const sampleVehicles: Vehicle[] = [
   {
@@ -96,7 +130,13 @@ export const sampleVehicles: Vehicle[] = [
     displayVin: resolveVehicleVin(
       import.meta.env.VITE_CHRIS_CX5_VIN,
       chrisMaskedVin,
-      allowLocalVins
+      allowLocalVehicleDetails
+    ),
+    maskedPlate,
+    displayPlate: resolveVehiclePlate(
+      import.meta.env.VITE_CHRIS_CX5_PLATE,
+      maskedPlate,
+      allowLocalVehicleDetails
     ),
     exteriorColor: "Machine Gray Metallic",
     imageSrc: "/vehicles/2026-cx5-premium-plus-machine-gray.png",
@@ -116,7 +156,13 @@ export const sampleVehicles: Vehicle[] = [
     displayVin: resolveVehicleVin(
       import.meta.env.VITE_JENNY_CX5_VIN,
       jennyMaskedVin,
-      allowLocalVins
+      allowLocalVehicleDetails
+    ),
+    maskedPlate,
+    displayPlate: resolveVehiclePlate(
+      import.meta.env.VITE_JENNY_CX5_PLATE,
+      maskedPlate,
+      allowLocalVehicleDetails
     ),
     exteriorColor: "Soul Red Crystal Metallic",
     imageSrc: "/vehicles/2026-cx5-premium-plus-soul-red.png",
@@ -128,21 +174,23 @@ export const sampleVehicles: Vehicle[] = [
     id: "cx5-elie",
     ownerName: "Elie",
     nickname: "Elie's CX-5",
-    year: 2024,
+    year: 2026,
     make: "Mazda",
     model: "CX-5",
-    trim: "Select",
+    trim: "2.5 S Select",
     maskedVin: elieMaskedVin,
-    displayVin: resolveVehicleVin(
-      import.meta.env.VITE_ELIE_CX5_VIN,
-      elieMaskedVin,
-      allowLocalVins
+    displayVin: elieMaskedVin,
+    maskedPlate,
+    displayPlate: resolveVehiclePlate(
+      import.meta.env.VITE_ELIE_CX5_PLATE,
+      maskedPlate,
+      allowLocalVehicleDetails
     ),
-    exteriorColor: "Platinum Quartz Metallic",
-    imageSrc: "/vehicles/2024-cx5-platinum-quartz-select-render.png",
-    imageAlt: "Elie's Platinum Quartz Metallic 2024 Mazda CX-5 Select",
-    contentProgress: 5,
-    recentQuestionIds: []
+    exteriorColor: "Polymetal Gray Metallic",
+    imageSrc: "/vehicles/2026-cx5-select-polymetal-gray.jpg",
+    imageAlt: "Elie's Polymetal Gray Metallic 2026 Mazda CX-5 2.5 S Select",
+    contentProgress: 13,
+    recentQuestionIds: ["odometer-location"]
   }
 ];
 
@@ -204,12 +252,19 @@ export const questions: Question[] = [
     title: "Where is the odometer?",
     eyebrow: "Displays & indicators",
     shortAnswer:
-      "This answer is awaiting verification against the official 2026 CX-5 documentation. This screen demonstrates where a concise answer, control location, and exact display steps will appear.",
-    applicability: "2026 Mazda CX-5 Premium Plus · U.S. market · sample profile",
-    verificationStatus: "researchBacklog",
+      "In the 2026 CX-5, the odometer and trip meter are shown on the Mazda Connect screen rather than in the instrument cluster. Open the Efficiency area from the Mazda Connect home screen, then choose Efficiency in its navigation bar to view them.",
+    applicability: "2026 Mazda CX-5 · U.S. market · all trims covered by Mazda's owner manual",
+    verificationStatus: "verified",
     nextResearchStep:
-      "Locate the official meter-display section and verify the steps on the target vehicle.",
-    relatedQuestionIds: ["software-updates", "hidden-settings"]
+      "Confirm the exact on-screen icon labels on each owner vehicle during a parked walkthrough.",
+    relatedQuestionIds: ["software-updates", "hidden-settings"],
+    procedureSteps: [
+      "With Mazda Connect at its home screen, open Efficiency.",
+      "Select Efficiency in the navigation bar.",
+      "Read the Odometer/Tripmeter information shown there."
+    ],
+    sourceReferenceIds: ["2026-cx5-owners-manual-odometer"],
+    lastReviewedAt: "2026-08-01"
   },
   {
     id: "occupant-comfort",
@@ -222,7 +277,8 @@ export const questions: Question[] = [
     verificationStatus: "researchBacklog",
     nextResearchStep:
       "Confirm Mazda's terminology and capture the applicable settings screens.",
-    relatedQuestionIds: ["driver-personalization", "hidden-settings"]
+    relatedQuestionIds: ["driver-personalization", "hidden-settings"],
+    sourceReferenceIds: []
   },
   {
     id: "driver-personalization",
@@ -235,7 +291,8 @@ export const questions: Question[] = [
     verificationStatus: "researchBacklog",
     nextResearchStep:
       "Test profile creation and switching with both sample owner scenarios.",
-    relatedQuestionIds: ["occupant-comfort", "hidden-settings"]
+    relatedQuestionIds: ["occupant-comfort", "hidden-settings"],
+    sourceReferenceIds: []
   },
   {
     id: "homelink-no-remote",
@@ -248,7 +305,8 @@ export const questions: Question[] = [
     verificationStatus: "researchBacklog",
     nextResearchStep:
       "Verify the official HomeLink procedure and rolling-code branch.",
-    relatedQuestionIds: ["trim-differences"]
+    relatedQuestionIds: ["trim-differences"],
+    sourceReferenceIds: []
   },
   {
     id: "trim-differences",
@@ -261,7 +319,8 @@ export const questions: Question[] = [
     verificationStatus: "researchBacklog",
     nextResearchStep:
       "Collect official equipment lists and compare two real vehicle configurations.",
-    relatedQuestionIds: ["illuminated-sills"]
+    relatedQuestionIds: ["illuminated-sills"],
+    sourceReferenceIds: []
   },
   {
     id: "illuminated-sills",
@@ -274,7 +333,8 @@ export const questions: Question[] = [
     verificationStatus: "researchBacklog",
     nextResearchStep:
       "Locate the official accessory catalog and installation documentation.",
-    relatedQuestionIds: ["trim-differences"]
+    relatedQuestionIds: ["trim-differences"],
+    sourceReferenceIds: []
   },
   {
     id: "software-updates",
@@ -287,7 +347,8 @@ export const questions: Question[] = [
     verificationStatus: "researchBacklog",
     nextResearchStep:
       "Inventory version screens and locate official update documentation.",
-    relatedQuestionIds: ["hidden-settings", "odometer-location"]
+    relatedQuestionIds: ["hidden-settings", "odometer-location"],
+    sourceReferenceIds: []
   },
   {
     id: "hidden-settings",
@@ -300,7 +361,23 @@ export const questions: Question[] = [
     verificationStatus: "researchBacklog",
     nextResearchStep:
       "Document every settings surface and note conditions that change availability.",
-    relatedQuestionIds: ["occupant-comfort", "driver-personalization"]
+    relatedQuestionIds: ["occupant-comfort", "driver-personalization"],
+    sourceReferenceIds: []
+  }
+];
+
+export const sourceReferences: SourceReference[] = [
+  {
+    id: "2026-cx5-owners-manual-odometer",
+    publisher: "Mazda North American Operations",
+    title: "2026 Mazda CX-5 Owner's Manual",
+    modelYear: 2026,
+    market: "U.S.",
+    publicationDate: "Publication date not stated in Mazda's web manual",
+    section: "Instrument Cluster > Odometer/Trip Meter",
+    page: "5-23 in the PDF owner's manual",
+    url: "https://www.mazdausa.com/static/manuals/2026/cx-5/contents/3813829899.html",
+    retrievedAt: "2026-08-01"
   }
 ];
 
@@ -365,8 +442,18 @@ export function getQuestionById(id: string): Question | undefined {
   return questions.find((question) => question.id === id);
 }
 
+export function getSourceReferenceById(id: string): SourceReference | undefined {
+  return sourceReferences.find((source) => source.id === id);
+}
+
 export function getQuestionsForTopic(topicId: string): Question[] {
   return questions.filter((question) => question.topicId === topicId);
+}
+
+export function supports2026Guidance(
+  vehicle: Pick<Vehicle, "year" | "make" | "model">
+): boolean {
+  return vehicle.year === 2026 && vehicle.make === "Mazda" && vehicle.model === "CX-5";
 }
 
 export function searchSettings(query: string): VehicleSetting[] {

@@ -27,7 +27,9 @@ describe("Vehicle Owner Companion prototype", () => {
     expect(
       screen.getByRole("heading", { name: "Where is the odometer?" })
     ).toBeInTheDocument();
-    expect(screen.getByText("Needs source verification")).toBeInTheDocument();
+    expect(screen.getByText("Verified Mazda guidance")).toBeInTheDocument();
+    expect(screen.getByText("Where to find it")).toBeInTheDocument();
+    expect(screen.getByText("2026 Mazda CX-5 Owner's Manual")).toBeInTheDocument();
   });
 
   it("filters the settings explorer with plain-language search", () => {
@@ -76,34 +78,34 @@ describe("Vehicle Owner Companion prototype", () => {
       })
     ).toBeInTheDocument();
     const elieImage = screen.getByRole("img", {
-      name: "Elie's Platinum Quartz Metallic 2024 Mazda CX-5 Select"
+      name: "Elie's Polymetal Gray Metallic 2026 Mazda CX-5 2.5 S Select"
     });
     expect(elieImage).toBeInTheDocument();
     expect(elieImage.parentElement).toHaveClass("vehicle-photo-cutout");
-    expect(elieImage.parentElement).not.toHaveClass("vehicle-photo-mirrored");
   });
 
-  it("keeps 2026 knowledge out of Elie's 2024 research track", () => {
+  it("makes Elie's new 2026 profile eligible for the shared 2026 knowledge", () => {
     render(<App />);
     fireEvent.click(screen.getByRole("button", { name: /open elie/i }));
     fireEvent.click(screen.getByRole("button", { name: /browse knowledge/i }));
 
     expect(
-      screen.getByRole("heading", { name: "2024 research track" })
+      screen.getByRole("heading", { name: "Knowledge topics" })
     ).toBeInTheDocument();
     expect(
-      screen.queryByRole("button", { name: /where is the odometer/i })
-    ).not.toBeInTheDocument();
+      screen.getByRole("button", { name: /where is the odometer/i })
+    ).toBeInTheDocument();
   });
 
-  it("keeps 2026 settings out of Elie's 2024 research track", () => {
+  it("shows Elie's matching 2026 Select image without reusing a different vehicle", () => {
     render(<App />);
     fireEvent.click(screen.getByRole("button", { name: /open elie/i }));
-    fireEvent.click(screen.getByRole("button", { name: /explore settings/i }));
 
     expect(
-      screen.getByRole("heading", { name: "2024 settings research" })
+      screen.getByRole("img", {
+        name: "Elie's Polymetal Gray Metallic 2026 Mazda CX-5 2.5 S Select"
+      })
     ).toBeInTheDocument();
-    expect(screen.queryByRole("searchbox")).not.toBeInTheDocument();
+    expect(screen.getByText("Polymetal Gray Metallic")).toBeInTheDocument();
   });
 });

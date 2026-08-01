@@ -3,11 +3,13 @@ import { useMemo, useState } from "react";
 import {
   getQuestionById,
   getQuestionsForTopic,
+  getSourceReferenceById,
   getVehicleById,
   knowledgeTopics,
   questions,
   sampleVehicles,
   searchSettings,
+  supports2026Guidance,
   type IconName,
   type Question,
   type Vehicle,
@@ -53,19 +55,34 @@ function Icon({ name }: IconProps) {
   );
 }
 
-function StatusPill() {
+function StatusPill({ status = "researchBacklog" }: { status?: Question["verificationStatus"] }) {
+  const labels: Record<Question["verificationStatus"], string> = {
+    researchBacklog: "Research backlog",
+    sourceLocated: "Source located",
+    verified: "Verified guidance"
+  };
+
   return (
     <span className="status-pill">
       <span className="status-dot" />
-      Research backlog
+      {labels[status]}
     </span>
   );
 }
 
 function VehiclePhoto({ vehicle }: { vehicle: Vehicle }) {
-  const presentation = vehicle.imageSrc.endsWith(".jpg") ? "scene" : "cutout";
+  if (!vehicle.imageSrc || !vehicle.imageAlt) {
+    return (
+      <div className="vehicle-photo vehicle-photo-placeholder" role="img" aria-label={`${vehicle.nickname} image pending`}>
+        <Icon name="vehicle" />
+        <span>Vehicle image pending</span>
+      </div>
+    );
+  }
+
+  const photoClass = vehicle.imageSrc.endsWith(".jpg") ? " vehicle-photo-photo" : "";
   return (
-    <div className={`vehicle-photo vehicle-photo-${presentation}`}>
+    <div className={`vehicle-photo vehicle-photo-cutout${photoClass}`}>
       <img alt={vehicle.imageAlt} src={vehicle.imageSrc} />
     </div>
   );
@@ -175,6 +192,7 @@ function VehiclePage({
             <div><dt>Owner</dt><dd>{vehicle.ownerName}</dd></div>
             <div><dt>Exterior</dt><dd>{vehicle.exteriorColor}</dd></div>
             <div><dt>VIN</dt><dd className="mono">{vehicle.displayVin}</dd></div>
+            <div><dt>Plate</dt><dd className="mono">{vehicle.displayPlate}</dd></div>
             <div><dt>Market</dt><dd>U.S. sample</dd></div>
           </dl>
         </div>
@@ -231,7 +249,7 @@ function KnowledgePage({ onOpenQuestion, vehicle }: KnowledgePageProps) {
     [question.title, question.eyebrow].join(" ").toLocaleLowerCase().includes(normalized)
   );
 
-  if (vehicle.year !== 2026) {
+  if (!supports2026Guidance(vehicle)) {
     return (
       <section className="page page-enter">
         <PageHeader
@@ -290,7 +308,7 @@ function KnowledgePage({ onOpenQuestion, vehicle }: KnowledgePageProps) {
               type="button"
             >
               <span><small>{question.eyebrow}</small><strong>{question.title}</strong></span>
-              <span className="row-state">Needs source</span>
+              <span className="row-state">{question.verificationStatus === "verified" ? "Verified" : "Needs source"}</span>
               <span aria-hidden="true">→</span>
             </button>
           ))}
@@ -310,6 +328,10 @@ function QuestionPage({ question, onBack, onOpenQuestion }: QuestionPageProps) {
   const related = question.relatedQuestionIds
     .map(getQuestionById)
     .filter((item): item is Question => Boolean(item));
+  const sources = question.sourceReferenceIds
+    .map(getSourceReferenceById)
+    .filter((source): source is NonNullable<typeof source> => Boolean(source));
+  const isVerified = question.verificationStatus === "verified";
 
   return (
     <article className="page question-page page-enter">
@@ -320,19 +342,24 @@ function QuestionPage({ question, onBack, onOpenQuestion }: QuestionPageProps) {
         <p className="applicability">{question.applicability}</p>
       </header>
 
-      <div className="verification-band">
+      <div className={`verification-band ${isVerified ? "verification-band-verified" : ""}`}>
         <div className="verification-icon"><Icon name="safety" /></div>
         <div>
-          <strong>Needs source verification</strong>
-          <p>This prototype does not present unverified vehicle instructions as fact.</p>
+          <strong>{isVerified ? "Verified Mazda guidance" : "Needs source verification"}</strong>
+          <p>{isVerified ? "This guidance is tied to the source record shown below." : "This prototype does not present unverified vehicle instructions as fact."}</p>
         </div>
       </div>
 
       <div className="answer-layout">
         <section className="answer-card">
-          <p className="eyebrow">Prototype answer</p>
-          <h2>What we can say now</h2>
+          <p className="eyebrow">{isVerified ? "Verified answer" : "Prototype answer"}</p>
+          <h2>{isVerified ? "Where to find it" : "What we can say now"}</h2>
           <p className="answer-copy">{question.shortAnswer}</p>
+          {question.procedureSteps && (
+            <ol className="procedure-steps">
+              {question.procedureSteps.map((step) => <li key={step}>{step}</li>)}
+            </ol>
+          )}
           <div className="research-next">
             <span className="note-index">02</span>
             <div><strong>Next research step</strong><p>{question.nextResearchStep}</p></div>
@@ -341,13 +368,26 @@ function QuestionPage({ question, onBack, onOpenQuestion }: QuestionPageProps) {
         <aside className="source-card">
           <p className="eyebrow">Evidence</p>
           <h2>Source record</h2>
-          <dl>
-            <div><dt>Status</dt><dd>Not attached</dd></div>
-            <div><dt>Model year</dt><dd>2026</dd></div>
-            <div><dt>Market</dt><dd>U.S.</dd></div>
-            <div><dt>Last reviewed</dt><dd>Not reviewed</dd></div>
-          </dl>
-          <p className="source-rule">Publication requires a title, version or date, section, and applicability review.</p>
+          {sources.length > 0 ? sources.map((source) => (
+            <div key={source.id}>
+              <dl>
+                <div><dt>Status</dt><dd>Verified</dd></div>
+                <div><dt>Model year</dt><dd>{source.modelYear}</dd></div>
+                <div><dt>Market</dt><dd>{source.market}</dd></div>
+                <div><dt>Section</dt><dd>{source.section}</dd></div>
+                <div><dt>Page</dt><dd>{source.page}</dd></div>
+                <div><dt>Reviewed</dt><dd>{question.lastReviewedAt}</dd></div>
+              </dl>
+              <a className="source-link" href={source.url} rel="noreferrer" target="_blank">{source.title}</a>
+            </div>
+          )) : (
+            <><dl>
+              <div><dt>Status</dt><dd>Not attached</dd></div>
+              <div><dt>Model year</dt><dd>2026</dd></div>
+              <div><dt>Market</dt><dd>U.S.</dd></div>
+              <div><dt>Last reviewed</dt><dd>Not reviewed</dd></div>
+            </dl><p className="source-rule">Publication requires a title, version or date, section, and applicability review.</p></>
+          )}
         </aside>
       </div>
 
@@ -376,7 +416,7 @@ function SettingsPage({ vehicle }: SettingsPageProps) {
   const [selectedId, setSelectedId] = useState("driver-personalization-setting");
   const selected = results.find((setting) => setting.id === selectedId) ?? results[0];
 
-  if (vehicle.year !== 2026) {
+  if (!supports2026Guidance(vehicle)) {
     return (
       <section className="page page-enter">
         <PageHeader

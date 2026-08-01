@@ -12,7 +12,10 @@ export interface Vehicle {
   model: string;
   trim: string;
   maskedVin: string;
+  displayVin: string;
   exteriorColor: string;
+  imageSrc: string;
+  imageAlt: string;
   contentProgress: number;
   recentQuestionIds: string[];
 }
@@ -60,6 +63,26 @@ export type IconName =
   | "safety"
   | "maintenance";
 
+export function resolveVehicleVin(
+  localVin: string | undefined,
+  maskedVin: string,
+  allowFullVin = true
+): string {
+  if (!allowFullVin) {
+    return maskedVin;
+  }
+
+  const normalized = localVin?.trim().toUpperCase();
+  return normalized && /^[A-HJ-NPR-Z0-9]{17}$/.test(normalized)
+    ? normalized
+    : maskedVin;
+}
+
+const chrisMaskedVin = "JM3*********02158";
+const jennyMaskedVin = "JM3*********05219";
+const elieMaskedVin = "JM3*********49339";
+const allowLocalVins = import.meta.env.VITE_PUBLIC_BUILD !== "true";
+
 export const sampleVehicles: Vehicle[] = [
   {
     id: "cx5-chris",
@@ -69,8 +92,15 @@ export const sampleVehicles: Vehicle[] = [
     make: "Mazda",
     model: "CX-5",
     trim: "Premium Plus",
-    maskedVin: "JM3*********02158",
-    exteriorColor: "Deep Crystal Blue",
+    maskedVin: chrisMaskedVin,
+    displayVin: resolveVehicleVin(
+      import.meta.env.VITE_CHRIS_CX5_VIN,
+      chrisMaskedVin,
+      allowLocalVins
+    ),
+    exteriorColor: "Machine Gray Metallic",
+    imageSrc: "/vehicles/2026-cx5-premium-plus-machine-gray.png",
+    imageAlt: "Chris's Machine Gray Metallic 2026 Mazda CX-5 Premium Plus",
     contentProgress: 18,
     recentQuestionIds: ["odometer-location", "occupant-comfort"]
   },
@@ -82,10 +112,37 @@ export const sampleVehicles: Vehicle[] = [
     make: "Mazda",
     model: "CX-5",
     trim: "Premium Plus",
-    maskedVin: "JM3*********05219",
-    exteriorColor: "Machine Gray",
+    maskedVin: jennyMaskedVin,
+    displayVin: resolveVehicleVin(
+      import.meta.env.VITE_JENNY_CX5_VIN,
+      jennyMaskedVin,
+      allowLocalVins
+    ),
+    exteriorColor: "Soul Red Crystal Metallic",
+    imageSrc: "/vehicles/2026-cx5-premium-plus-soul-red.png",
+    imageAlt: "Jenny's Soul Red Crystal Metallic 2026 Mazda CX-5 Premium Plus",
     contentProgress: 18,
     recentQuestionIds: ["driver-personalization", "homelink-no-remote"]
+  },
+  {
+    id: "cx5-elie",
+    ownerName: "Elie",
+    nickname: "Elie's CX-5",
+    year: 2024,
+    make: "Mazda",
+    model: "CX-5",
+    trim: "Select",
+    maskedVin: elieMaskedVin,
+    displayVin: resolveVehicleVin(
+      import.meta.env.VITE_ELIE_CX5_VIN,
+      elieMaskedVin,
+      allowLocalVins
+    ),
+    exteriorColor: "Platinum Quartz Metallic",
+    imageSrc: "/vehicles/2024-cx5-platinum-quartz-select-render.png",
+    imageAlt: "Elie's Platinum Quartz Metallic 2024 Mazda CX-5 Select",
+    contentProgress: 5,
+    recentQuestionIds: []
   }
 ];
 

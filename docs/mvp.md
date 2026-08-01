@@ -31,7 +31,9 @@ These are backlog topics, not automatically verified claims. Each must be resear
 
 ## Local-only data
 
-The prototype will use bundled or locally persisted sample data. It may include sample vehicles for Chris and Jenny, but committed source must contain only masked, clearly non-sensitive VIN values.
+The prototype will use bundled or locally persisted sample data. It includes vehicles for Chris, Jenny, and Elie. Committed source contains only masked, clearly non-sensitive VIN values. Full owner-provided VINs may be shown locally through ignored environment files, but must never be committed.
+
+Knowledge and settings content must remain isolated by model year. The 2024 CX-5 profile must not inherit unverified 2026 guidance.
 
 ## Delivery sequence
 

@@ -62,17 +62,11 @@ function StatusPill() {
   );
 }
 
-function VehicleContour() {
+function VehiclePhoto({ vehicle }: { vehicle: Vehicle }) {
+  const presentation = vehicle.imageSrc.endsWith(".jpg") ? "scene" : "cutout";
   return (
-    <div className="vehicle-contour" aria-hidden="true">
-      <svg viewBox="0 0 520 210" role="presentation">
-        <path className="contour-faint" d="M39 153C77 111 127 82 198 71c59-9 139-8 196 15 31 13 54 34 80 65" />
-        <path d="M49 155c25-5 39-23 51-45 16-30 48-51 84-57 65-11 128-10 191 10 24 8 38 31 53 49 12 14 27 29 45 37l18 5" />
-        <path d="M33 157h47c12 0 16-7 19-17 8-27 30-43 57-43s50 17 58 45c3 10 7 15 18 15h94c11 0 15-5 18-16 7-27 30-44 57-44 28 0 51 18 59 45 3 10 8 15 19 15h31" />
-        <circle cx="156" cy="157" r="37" />
-        <circle cx="401" cy="157" r="37" />
-        <path className="contour-detail" d="M202 73 230 42h104l61 47M230 73h155M264 44v29M343 45l23 30M89 111l51-6M434 111l28 8" />
-      </svg>
+    <div className={`vehicle-photo vehicle-photo-${presentation}`}>
+      <img alt={vehicle.imageAlt} src={vehicle.imageSrc} />
     </div>
   );
 }
@@ -101,7 +95,7 @@ function GaragePage({ onOpenVehicle }: GaragePageProps) {
   return (
     <section className="page page-enter">
       <PageHeader
-        eyebrow="2 vehicles · local prototype"
+        eyebrow={`${sampleVehicles.length} vehicles · local prototype`}
         title="Your garage"
         description="Choose the vehicle you are standing beside. Every guide, setting, and source check stays tied to that exact profile."
       />
@@ -119,7 +113,7 @@ function GaragePage({ onOpenVehicle }: GaragePageProps) {
               <span className="sequence">Vehicle {String(index + 1).padStart(2, "0")}</span>
               <StatusPill />
             </div>
-            <VehicleContour />
+            <VehiclePhoto vehicle={vehicle} />
             <div className="vehicle-card-copy">
               <div>
                 <p className="vehicle-year">{vehicle.year} {vehicle.make}</p>
@@ -130,7 +124,7 @@ function GaragePage({ onOpenVehicle }: GaragePageProps) {
             </div>
             <div className="vehicle-card-meta">
               <span>{vehicle.exteriorColor}</span>
-              <span className="mono">{vehicle.maskedVin}</span>
+              <span className="mono">{vehicle.displayVin}</span>
             </div>
           </button>
         ))}
@@ -140,7 +134,7 @@ function GaragePage({ onOpenVehicle }: GaragePageProps) {
         <span className="note-index">01</span>
         <div>
           <strong>Built for validation</strong>
-          <p>All vehicle content is local sample data. Guidance remains visibly marked until a 2026 Mazda source is attached and reviewed.</p>
+          <p>All vehicle content is local sample data. Guidance remains visibly marked until an applicable Mazda source is attached and reviewed.</p>
         </div>
       </aside>
     </section>
@@ -180,12 +174,12 @@ function VehiclePage({
           <dl className="vehicle-facts">
             <div><dt>Owner</dt><dd>{vehicle.ownerName}</dd></div>
             <div><dt>Exterior</dt><dd>{vehicle.exteriorColor}</dd></div>
-            <div><dt>VIN</dt><dd className="mono">{vehicle.maskedVin}</dd></div>
+            <div><dt>VIN</dt><dd className="mono">{vehicle.displayVin}</dd></div>
             <div><dt>Market</dt><dd>U.S. sample</dd></div>
           </dl>
         </div>
         <div className="dossier-visual">
-          <VehicleContour />
+          <VehiclePhoto vehicle={vehicle} />
           <div className="content-meter">
             <span className="meter-value">{vehicle.contentProgress}%</span>
             <span>research mapped</span>
@@ -227,14 +221,28 @@ function VehiclePage({
 
 interface KnowledgePageProps {
   onOpenQuestion: (questionId: string) => void;
+  vehicle: Vehicle;
 }
 
-function KnowledgePage({ onOpenQuestion }: KnowledgePageProps) {
+function KnowledgePage({ onOpenQuestion, vehicle }: KnowledgePageProps) {
   const [query, setQuery] = useState("");
   const normalized = query.trim().toLocaleLowerCase();
   const visibleQuestions = questions.filter((question) =>
     [question.title, question.eyebrow].join(" ").toLocaleLowerCase().includes(normalized)
   );
+
+  if (vehicle.year !== 2026) {
+    return (
+      <section className="page page-enter">
+        <PageHeader
+          eyebrow={`${vehicle.year} ${vehicle.make} ${vehicle.model} · ${vehicle.trim}`}
+          title="2024 research track"
+          description="The official 2024 owner, Mazda Connect, navigation, and connected-services manuals are cataloged separately for this vehicle."
+        />
+        <ResearchTrackNotice vehicle={vehicle} />
+      </section>
+    );
+  }
 
   return (
     <section className="page page-enter">
@@ -368,6 +376,19 @@ function SettingsPage({ vehicle }: SettingsPageProps) {
   const [selectedId, setSelectedId] = useState("driver-personalization-setting");
   const selected = results.find((setting) => setting.id === selectedId) ?? results[0];
 
+  if (vehicle.year !== 2026) {
+    return (
+      <section className="page page-enter">
+        <PageHeader
+          eyebrow={`${vehicle.year} ${vehicle.make} ${vehicle.model} · ${vehicle.trim}`}
+          title="2024 settings research"
+          description="Settings for this model year will be mapped only from the 2024 manuals and verified vehicle behavior."
+        />
+        <ResearchTrackNotice vehicle={vehicle} />
+      </section>
+    );
+  }
+
   return (
     <section className="page page-enter">
       <PageHeader
@@ -408,6 +429,23 @@ function SettingsPage({ vehicle }: SettingsPageProps) {
         <SettingDetail setting={selected} />
       </div>
     </section>
+  );
+}
+
+function ResearchTrackNotice({ vehicle }: { vehicle: Vehicle }) {
+  return (
+    <aside className="research-track-card">
+      <span className="note-index">24</span>
+      <div>
+        <p className="eyebrow">Source track ready</p>
+        <h2>{vehicle.nickname}</h2>
+        <p>
+          This vehicle stays isolated from the 2026 knowledge and settings
+          backlog. The next step is turning the cataloged 2024 sources into
+          verified, Select-specific guidance.
+        </p>
+      </div>
+    </aside>
   );
 }
 
@@ -484,7 +522,7 @@ export default function App() {
 
       <main className="app-main">
         <div className="utility-bar">
-          <span className="utility-context">2026 CX-5 · Premium Plus</span>
+          <span className="utility-context">{vehicle.year} {vehicle.model} · {vehicle.trim}</span>
           <span className="local-badge">Local prototype</span>
         </div>
 
@@ -497,7 +535,7 @@ export default function App() {
             vehicle={vehicle}
           />
         )}
-        {view === "knowledge" && <KnowledgePage onOpenQuestion={openQuestion} />}
+        {view === "knowledge" && <KnowledgePage onOpenQuestion={openQuestion} vehicle={vehicle} />}
         {view === "question" && (
           <QuestionPage onBack={() => setView("knowledge")} onOpenQuestion={openQuestion} question={question} />
         )}

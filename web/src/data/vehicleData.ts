@@ -115,7 +115,8 @@ const chrisMaskedVin = "JM3*********62710";
 const jennyMaskedVin = "JM3*********72753";
 const elieMaskedVin = "JM3*********11591";
 const maskedPlate = "Plate on file";
-const allowLocalVehicleDetails = import.meta.env.VITE_PUBLIC_BUILD !== "true";
+const allowLocalVins = import.meta.env.VITE_PUBLIC_BUILD !== "true";
+const allowPlateDisplay = true;
 const vehicleImage = (fileName: string) => `${import.meta.env.BASE_URL}vehicles/${fileName}`;
 
 export const sampleVehicles: Vehicle[] = [
@@ -131,13 +132,13 @@ export const sampleVehicles: Vehicle[] = [
     displayVin: resolveVehicleVin(
       import.meta.env.VITE_CHRIS_CX5_VIN,
       chrisMaskedVin,
-      allowLocalVehicleDetails
+      allowLocalVins
     ),
     maskedPlate,
     displayPlate: resolveVehiclePlate(
       import.meta.env.VITE_CHRIS_CX5_PLATE,
       maskedPlate,
-      allowLocalVehicleDetails
+      allowPlateDisplay
     ),
     exteriorColor: "Machine Gray Metallic",
     imageSrc: vehicleImage("2026-cx5-premium-plus-machine-gray.png"),
@@ -157,13 +158,13 @@ export const sampleVehicles: Vehicle[] = [
     displayVin: resolveVehicleVin(
       import.meta.env.VITE_JENNY_CX5_VIN,
       jennyMaskedVin,
-      allowLocalVehicleDetails
+      allowLocalVins
     ),
     maskedPlate,
     displayPlate: resolveVehiclePlate(
       import.meta.env.VITE_JENNY_CX5_PLATE,
       maskedPlate,
-      allowLocalVehicleDetails
+      allowPlateDisplay
     ),
     exteriorColor: "Soul Red Crystal Metallic",
     imageSrc: vehicleImage("2026-cx5-premium-plus-soul-red.png"),
@@ -183,13 +184,13 @@ export const sampleVehicles: Vehicle[] = [
     displayVin: resolveVehicleVin(
       import.meta.env.VITE_ELIE_CX5_VIN,
       elieMaskedVin,
-      allowLocalVehicleDetails
+      allowLocalVins
     ),
     maskedPlate,
     displayPlate: resolveVehiclePlate(
       import.meta.env.VITE_ELIE_CX5_PLATE,
       maskedPlate,
-      allowLocalVehicleDetails
+      allowPlateDisplay
     ),
     exteriorColor: "Polymetal Gray Metallic",
     imageSrc: vehicleImage("2026-cx5-select-polymetal-gray-cutout.png"),

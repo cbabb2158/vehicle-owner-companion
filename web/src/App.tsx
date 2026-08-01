@@ -55,7 +55,13 @@ function Icon({ name }: IconProps) {
   );
 }
 
-function StatusPill({ status = "researchBacklog" }: { status?: Question["verificationStatus"] }) {
+function StatusPill({
+  status = "researchBacklog",
+  label
+}: {
+  status?: Question["verificationStatus"];
+  label?: string;
+}) {
   const labels: Record<Question["verificationStatus"], string> = {
     researchBacklog: "Research backlog",
     sourceLocated: "Source located",
@@ -65,9 +71,13 @@ function StatusPill({ status = "researchBacklog" }: { status?: Question["verific
   return (
     <span className="status-pill">
       <span className="status-dot" />
-      {labels[status]}
+      {label ?? labels[status]}
     </span>
   );
+}
+
+function LicensePlate({ value }: { value: string }) {
+  return <span className="license-plate" aria-label={`License plate ${value}`}>{value}</span>;
 }
 
 function VehiclePhoto({ vehicle }: { vehicle: Vehicle }) {
@@ -128,7 +138,7 @@ function GaragePage({ onOpenVehicle }: GaragePageProps) {
           >
             <div className="vehicle-card-topline">
               <span className="sequence">Vehicle {String(index + 1).padStart(2, "0")}</span>
-              <StatusPill />
+              <StatusPill label="Guidance in progress" />
             </div>
             <VehiclePhoto vehicle={vehicle} />
             <div className="vehicle-card-copy">
@@ -141,7 +151,10 @@ function GaragePage({ onOpenVehicle }: GaragePageProps) {
             </div>
             <div className="vehicle-card-meta">
               <span>{vehicle.exteriorColor}</span>
-              <span className="mono">{vehicle.displayVin}</span>
+              <span className="vehicle-identifiers">
+                <LicensePlate value={vehicle.displayPlate} />
+                <span className="mono">{vehicle.displayVin}</span>
+              </span>
             </div>
           </button>
         ))}
@@ -185,15 +198,14 @@ function VehiclePage({
 
       <div className="dossier-card">
         <div className="dossier-copy">
-          <StatusPill />
+          <StatusPill label="Guidance in progress" />
           <p className="dossier-label">Vehicle dossier</p>
           <h2>{vehicle.trim}</h2>
           <dl className="vehicle-facts">
             <div><dt>Owner</dt><dd>{vehicle.ownerName}</dd></div>
             <div><dt>Exterior</dt><dd>{vehicle.exteriorColor}</dd></div>
             <div><dt>VIN</dt><dd className="mono">{vehicle.displayVin}</dd></div>
-            <div><dt>Plate</dt><dd className="mono">{vehicle.displayPlate}</dd></div>
-            <div><dt>Market</dt><dd>U.S. sample</dd></div>
+            <div><dt>Plate</dt><dd><LicensePlate value={vehicle.displayPlate} /></dd></div>
           </dl>
         </div>
         <div className="dossier-visual">

@@ -506,8 +506,39 @@ input {
   justify-content: space-between;
   gap: 16px;
   border-top: 1px solid currentColor;
-  opacity: 0.52;
   font-size: 11px;
+}
+
+.vehicle-card-meta > span:first-child,
+.vehicle-identifiers > .mono {
+  opacity: 0.52;
+}
+
+.vehicle-identifiers {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.license-plate {
+  min-width: 54px;
+  padding: 4px 7px 3px;
+  display: inline-block;
+  border: 1px solid #183c74;
+  border-radius: 3px;
+  background:
+    linear-gradient(145deg, transparent 48%, rgba(26, 57, 106, 0.1) 49% 51%, transparent 52%),
+    #f7f6ef;
+  box-shadow: inset 0 0 0 2px rgba(245, 193, 47, 0.72);
+  color: #183c74;
+  font: 750 10px/1 var(--utility);
+  letter-spacing: 0.1em;
+  text-align: center;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.75);
+}
+
+.dossier-copy .license-plate {
+  color: #193d75;
 }
 
 .mono {

@@ -111,9 +111,9 @@ export function resolveVehiclePlate(
     : maskedPlate;
 }
 
-const chrisMaskedVin = "JM3*********02158";
-const jennyMaskedVin = "JM3*********05219";
-const elieMaskedVin = "VIN forthcoming";
+const chrisMaskedVin = "JM3*********62710";
+const jennyMaskedVin = "JM3*********72753";
+const elieMaskedVin = "JM3*********11591";
 const maskedPlate = "Plate on file";
 const allowLocalVehicleDetails = import.meta.env.VITE_PUBLIC_BUILD !== "true";
 const vehicleImage = (fileName: string) => `${import.meta.env.BASE_URL}vehicles/${fileName}`;

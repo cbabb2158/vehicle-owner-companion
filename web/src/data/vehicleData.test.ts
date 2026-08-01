@@ -23,7 +23,7 @@ describe("local vehicle data", () => {
       expect(vehicle.maskedVin).toMatch(/^JM3\*{9}\d{5}$/);
       expect(vehicle.maskedVin).not.toMatch(/^[A-HJ-NPR-Z0-9]{17}$/);
     }
-    expect(getVehicleById("cx5-elie")?.maskedVin).toBe("VIN forthcoming");
+    expect(getVehicleById("cx5-elie")?.maskedVin).toBe("JM3*********11591");
   });
 
   it("uses a valid local VIN while retaining the masked fallback", () => {
@@ -80,7 +80,7 @@ describe("local vehicle data", () => {
       model: "CX-5",
       trim: "2.5 S Select",
       exteriorColor: "Polymetal Gray Metallic",
-      maskedVin: "VIN forthcoming",
+      maskedVin: "JM3*********11591",
       imageSrc: "/vehicles/2026-cx5-select-polymetal-gray-cutout.png",
       imageAlt: "Elie's Polymetal Gray Metallic 2026 Mazda CX-5 2.5 S Select"
     });

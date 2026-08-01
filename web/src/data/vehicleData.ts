@@ -116,6 +116,7 @@ const jennyMaskedVin = "JM3*********05219";
 const elieMaskedVin = "VIN forthcoming";
 const maskedPlate = "Plate on file";
 const allowLocalVehicleDetails = import.meta.env.VITE_PUBLIC_BUILD !== "true";
+const vehicleImage = (fileName: string) => `${import.meta.env.BASE_URL}vehicles/${fileName}`;
 
 export const sampleVehicles: Vehicle[] = [
   {
@@ -139,7 +140,7 @@ export const sampleVehicles: Vehicle[] = [
       allowLocalVehicleDetails
     ),
     exteriorColor: "Machine Gray Metallic",
-    imageSrc: "/vehicles/2026-cx5-premium-plus-machine-gray.png",
+    imageSrc: vehicleImage("2026-cx5-premium-plus-machine-gray.png"),
     imageAlt: "Chris's Machine Gray Metallic 2026 Mazda CX-5 Premium Plus",
     contentProgress: 18,
     recentQuestionIds: ["odometer-location", "occupant-comfort"]
@@ -165,7 +166,7 @@ export const sampleVehicles: Vehicle[] = [
       allowLocalVehicleDetails
     ),
     exteriorColor: "Soul Red Crystal Metallic",
-    imageSrc: "/vehicles/2026-cx5-premium-plus-soul-red.png",
+    imageSrc: vehicleImage("2026-cx5-premium-plus-soul-red.png"),
     imageAlt: "Jenny's Soul Red Crystal Metallic 2026 Mazda CX-5 Premium Plus",
     contentProgress: 18,
     recentQuestionIds: ["driver-personalization", "homelink-no-remote"]
@@ -191,7 +192,7 @@ export const sampleVehicles: Vehicle[] = [
       allowLocalVehicleDetails
     ),
     exteriorColor: "Polymetal Gray Metallic",
-    imageSrc: "/vehicles/2026-cx5-select-polymetal-gray-cutout.png",
+    imageSrc: vehicleImage("2026-cx5-select-polymetal-gray-cutout.png"),
     imageAlt: "Elie's Polymetal Gray Metallic 2026 Mazda CX-5 2.5 S Select",
     contentProgress: 13,
     recentQuestionIds: ["odometer-location"]

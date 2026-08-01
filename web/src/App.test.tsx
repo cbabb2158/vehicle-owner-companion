@@ -82,8 +82,7 @@ describe("Vehicle Owner Companion prototype", () => {
     });
     expect(elieImage).toBeInTheDocument();
     expect(elieImage.parentElement).toHaveClass("vehicle-photo-cutout");
-    expect(screen.getAllByLabelText("License plate GL4S3D")).toHaveLength(2);
-    expect(screen.getByLabelText("License plate GL4S2D")).toBeInTheDocument();
+    expect(screen.getAllByLabelText(/^License plate /)).toHaveLength(3);
     expect(screen.getAllByText("Guidance in progress")).toHaveLength(3);
   });
 

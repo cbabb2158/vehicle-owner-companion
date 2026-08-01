@@ -81,7 +81,7 @@ describe("local vehicle data", () => {
       trim: "2.5 S Select",
       exteriorColor: "Polymetal Gray Metallic",
       maskedVin: "VIN forthcoming",
-      imageSrc: "/vehicles/2026-cx5-select-polymetal-gray.jpg",
+      imageSrc: "/vehicles/2026-cx5-select-polymetal-gray-cutout.png",
       imageAlt: "Elie's Polymetal Gray Metallic 2026 Mazda CX-5 2.5 S Select"
     });
   });

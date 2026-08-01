@@ -179,7 +179,11 @@ export const sampleVehicles: Vehicle[] = [
     model: "CX-5",
     trim: "2.5 S Select",
     maskedVin: elieMaskedVin,
-    displayVin: elieMaskedVin,
+    displayVin: resolveVehicleVin(
+      import.meta.env.VITE_ELIE_CX5_VIN,
+      elieMaskedVin,
+      allowLocalVehicleDetails
+    ),
     maskedPlate,
     displayPlate: resolveVehiclePlate(
       import.meta.env.VITE_ELIE_CX5_PLATE,
